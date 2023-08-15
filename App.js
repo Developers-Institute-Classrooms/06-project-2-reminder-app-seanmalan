@@ -16,6 +16,12 @@ export default function App() {
   const [taskName, setTaskName] = useState("");
   const [selectedDate, setSelectedDate] = useState(new Date());
 
+
+  console.log(`This is the ListData: ${listData}`)
+  console.log(`This is the TaskName: ${taskName}`)
+  console.log('taskName: ', taskName)
+
+
   const addTask = (dateTime) => {
     const newData = [...listData];
     newData.push({
@@ -23,34 +29,49 @@ export default function App() {
       timestamp: dateTime.toString(),
       key: new Date().getTime().toString(),
     });
+    console.log(`Name: ${newData.name}`)
+    // console.log(`Timestamp: ${newData.timestamp}`)
+    // console.log(`Key: ${newData.key}`)
     setListData(newData);
     setDateTimePickerMode("date");
   };
 
-  const datePickerMode = (currentMode) => {
-    setShowDatePicker(true);
-    setDateTimePickerMode(currentMode);
-  };
+  // const datePickerMode = (currentMode) => {
+  //   setShowDatePicker(true);
+  //   setDateTimePickerMode(currentMode);
+  // };
 
-  let isMounted = false;
+  // let isMounted = false;
 
-  useEffect(() => {
-    isMounted = true;
-    console.warn("app mounted");
-    return () => {
-      isMounted = false;
-    };
-  }, []);
+  // useEffect(() => {
+  //   isMounted = true;
+  //   // console.warn("app mounted");
+  //   return () => {
+  //     isMounted = false;
+  //   };
+  // }, []);
 
-  const closeRow = (rowMap, key) => {
-    if (rowMap[key]) {
-      rowMap[key].closeRow();
-    }
-  };
+  // const closeRow = (rowMap, key) => {
+  //   if (rowMap[key]) {
+  //     rowMap[key].closeRow();
+  //   }
+  // };
 
   const onRowDidOpen = (rowKey) => {
     console.log("This row opened", rowKey);
   };
+
+
+
+  const add = (task) => {
+    console.log(`Im inside setTask: ${task.toString()}`)
+    setTaskName(task);
+    setSelectedDate(new Date());
+    setShowDatePicker(true);
+  };
+
+
+
 
   return (
     <View style={{ height: "100%" }}>
@@ -72,12 +93,7 @@ export default function App() {
           Reminders
         </Text>
         <AddTodo
-          add={(name) => {
-            // TIP: handles add button being pressed
-            setTaskName(name);
-            setSelectedDate(new Date());
-            setShowDatePicker(true);
-          }}
+          AddTodo={add}
         />
         <View
           style={{

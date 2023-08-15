@@ -12,21 +12,33 @@ const styles = StyleSheet.create({
 });
 
 // TIP: this component has bad naming that creates confusion
-const AddTodo = ({ add }) => {
+const AddTodo = ({ AddTodo }) => {
   const [name, setName] = useState("");
-  const newAdd = (n) => {
-    newName(n.name);
-  };
+
+  console.log(`AddTodo name: ${name}`)
+
+
+  // const newAdd = (n) => {
+  //   newName(n.name);
+  // };
+
+
   const newAddName = (e) => {
     setName(e);
   };
+
+
   const newName = (a) => {
     newAddName(a);
   };
-  const test = () => {
-    console.log(name);
-    add(name);
-  };
+
+
+  // const test = () => {
+  //   console.log(name);
+  //   add(name);
+  // };
+
+  
   return (
     <View style={styles.container}>
       <View style={styles.newContainer}>
@@ -37,7 +49,8 @@ const AddTodo = ({ add }) => {
           onChangeText={(e) => newAddName(e)}
         ></TextInput>
       </View>
-      <Button title="Add" onPress={newAdd}></Button>
+      {/* <Button title="Add" onPress={newAdd}></Button> */}
+      <Button title="Add" onPress={() => AddTodo(name.toString())}></Button>
     </View>
   );
 };
