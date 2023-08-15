@@ -76,11 +76,11 @@ const onChange = (event, selectedDate) => {
   //   };
   // }, []);
 
-  // const closeRow = (rowMap, key) => {
-  //   if (rowMap[key]) {
-  //     rowMap[key].closeRow();
-  //   }
-  // };
+  const closeRow = (rowMap, key) => {
+    if (rowMap[key]) {
+      rowMap[key].closeRow();
+    }
+  };
 
   const onRowDidOpen = (rowKey) => {
     console.log("This row opened", rowKey);
@@ -132,21 +132,6 @@ const onChange = (event, selectedDate) => {
         />
 
         <Text>{text}</Text>
-
-        
-
-        {/* <View>
-        <Text>All Day</Text>
-        <Switch
-        trackColor={{false: '#767577', true: '#81b0ff'}}
-        thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
-        ios_backgroundColor="#3e3e3e"
-        onValueChange={toggleSwitch}
-        value={isEnabled}
-      />
-        </View> */}
-
-
 
 
 
