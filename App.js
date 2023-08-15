@@ -15,8 +15,6 @@ export default function App() {
   const [dateTimePickerMode, setDateTimePickerMode] = useState("date");
   const [taskName, setTaskName] = useState("");
   const [date, setDate] = useState(new Date());
-  const [isEnabled, setIsEnabled] = useState(false);
-  const [text, setText] = useState('Empty')
   
   
   
@@ -58,27 +56,13 @@ listData.forEach(item => {
     });
     
     setListData(newData);
-    // setDateTimePickerMode("date");
+    setDateTimePickerMode("date");
   };
 
 
-const onChange = (event, selectedDate) => {
-  const currentDate = selectedDate || date;
-  setDate(currentDate);
-  
-  let tempDate = new Date(currentDate);
-  let formattedDate = tempDate.getDate() + "/" + (tempDate.getMonth() + 1) + "/" + tempDate.getFullYear();
-  let formattedTime = tempDate.getHours() + ":" + tempDate.getMinutes();
 
-  setText(formattedDate + '\n' + formattedTime);
-  console.log(formattedDate + '\n' + formattedTime);
-  console.log(`Text: ${text}`)
-
-
-}
   const datePickerMode = (currentMode) => {
-    //setShowDatePicker(true);
-    setIsEnabled(true);
+    setShowDatePicker(true);
     setDateTimePickerMode(currentMode);
   };
 
@@ -109,12 +93,6 @@ const onChange = (event, selectedDate) => {
     setTaskName(task);
     setDate(new Date());
     setShowDatePicker(true);
-  
-    if (isEnabled) {
-      setDateTimePickerMode("date");
-    } else {
-      setDateTimePickerMode("time");
-    }
   };
   
 
@@ -139,17 +117,8 @@ const onChange = (event, selectedDate) => {
         </Text>
         <AddTodo
           AddTodo={add}
-          text={text}
-          onChange={onChange}
-          show={isEnabled}
-          date={date}
-          mode={dateTimePickerMode}
-          datePickerMode={datePickerMode}
+          
         />
-
-        <Text>{text}</Text>
-
-
 
         <View
           style={{
@@ -182,7 +151,7 @@ const onChange = (event, selectedDate) => {
       {showDatePicker ? (
         <DateTimePicker
           testID="dateTimePicker"
-          value={new Date()}
+          value={date}
           // @ts-ignore
           mode={dateTimePickerMode}
           onChange={(event, dateString) => {
@@ -198,10 +167,10 @@ const onChange = (event, selectedDate) => {
                 const hours = time.getHours();
                 const minutes = time.getMinutes();
                 const seconds = 0;
-                const newDate = new Date(date);
-                newDate.setHours(hours, minutes, seconds);
-                setDate(newDate);
-                addTask(new Date());
+                const updatedDate = new Date(date);
+                updatedDate.setHours(hours, minutes, seconds);
+                setDate(updatedDate);
+                addTask(updatedDate);
               }
             } else {
               setDateTimePickerMode("date");

@@ -1,7 +1,6 @@
 
-import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
-import { TextInput, View, Button, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { TextInput, View, Button, StyleSheet } from "react-native";
 
 const styles = StyleSheet.create({
   container: {
@@ -14,14 +13,14 @@ const styles = StyleSheet.create({
 });
 
 // TIP: this component has bad naming that creates confusion
-const AddTodo = ({ AddTodo, text, onChange, show, datePickerMode, date }) => {
+const AddTodo = ({ AddTodo }) => {
   const [name, setName] = useState("");
 
   console.log(`AddTodo name: ${name}`);
 
-  // const newAdd = (n) => {
-  //   newName(n.name);
-  // };
+  const newAdd = (n) => {
+    newName(n.name);
+  };
 
   const newAddName = (e) => {
     setName(e);
@@ -47,20 +46,7 @@ const AddTodo = ({ AddTodo, text, onChange, show, datePickerMode, date }) => {
         ></TextInput>
       </View>
 
-      <View>
-        <Text>{text}</Text>
-      </View>
-
-    <TouchableOpacity title="DatePicker" onPress={() => datePickerMode("date")}>
-      <Text>Date:</Text>
-    </TouchableOpacity>
-    <TouchableOpacity title="TimePicker" onPress={() => datePickerMode("time")}>
-      <Text>Time:</Text>
-    </TouchableOpacity>
-
-    {show && (<DateTimePicker value={date} mode={datePickerMode} is24Hour={true} display="default" onChange={onChange} />)}
-
-      {/* <Button title="Add" onPress={newAdd}></Button> */}
+      <Button title="New Add" onPress={newAdd}></Button>
       <Button title="Add" onPress={() => AddTodo(name.toString())}></Button>
     </View>
   );
