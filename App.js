@@ -17,9 +17,16 @@ export default function App() {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
 
-  console.log(`This is the ListData: ${listData}`)
-  console.log(`This is the TaskName: ${taskName}`)
-  console.log('taskName: ', taskName)
+  // console.log(`This is the ListData: ${listData}`)
+  // console.log(`This is the TaskName: ${taskName}`)
+  // console.log('taskName: ', taskName)
+
+  console.log("List Data:");
+listData.forEach(item => {
+  console.log("Name:", item.name);
+  console.log("Timestamp:", item.timestamp);
+  console.log("Key:", item.key);
+});
 
 
   const addTask = (dateTime) => {
@@ -29,9 +36,7 @@ export default function App() {
       timestamp: dateTime.toString(),
       key: new Date().getTime().toString(),
     });
-    console.log(`Name: ${newData.name}`)
-    // console.log(`Timestamp: ${newData.timestamp}`)
-    // console.log(`Key: ${newData.key}`)
+    
     setListData(newData);
     setDateTimePickerMode("date");
   };
@@ -103,7 +108,7 @@ export default function App() {
         >
           <SwipeListView
             data={listData}
-            renderItem={TodoItem}
+            renderItem={({ item }) => <TodoItem item={item} />}
             renderHiddenItem={(data, rowMap) =>
               TodoItemButtons(data, rowMap, (rowMap, deleteThis) => {
                 // TIP: deletes a task/row
