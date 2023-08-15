@@ -20,21 +20,10 @@ export default function App() {
   
   
   
-  // const toggleSwitch = () => {
-  //   setIsEnabled(previousState => !previousState);
-  //   if (isEnabled) {
-  //     console.log(`I am set to All day`)
-  //     setDateTimePickerMode("date");
-  //   } else {
-  //     console.log(`I am set to date and Time`)
-  //     setDateTimePickerMode("time");
-  //   }
-  // };
-  
 
-  // console.log(`This is the ListData: ${listData}`)
-  // console.log(`This is the TaskName: ${taskName}`)
-  // console.log('taskName: ', taskName)
+  console.log(`This is the ListData: ${listData}`)
+  console.log(`This is the TaskName: ${taskName}`)
+  console.log('taskName: ', taskName)
 
   console.log("List Data:");
 listData.forEach(item => {
