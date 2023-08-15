@@ -18,6 +18,21 @@ export default function App() {
   
   
   
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem("reminder-list");
+        if (jsonValue !== null) {
+          setListData(JSON.parse(jsonValue));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getData();
+  }, []);
+
+  
 
   useEffect(() => {
     const storeData = async (array) => {

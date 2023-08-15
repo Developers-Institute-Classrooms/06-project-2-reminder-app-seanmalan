@@ -18,17 +18,10 @@ const AddTodo = ({ AddTodo }) => {
 
   console.log(`AddTodo name: ${name}`);
 
-  const newAdd = (n) => {
-    newName(n.name);
-  };
-
   const newAddName = (e) => {
     setName(e);
   };
 
-  const newName = (a) => {
-    newAddName(a);
-  };
 
   // const test = () => {
   //   console.log(name);
@@ -46,7 +39,6 @@ const AddTodo = ({ AddTodo }) => {
         ></TextInput>
       </View>
 
-      <Button title="New Add" onPress={newAdd}></Button>
       <Button title="Add" onPress={() => AddTodo(name.toString())}></Button>
     </View>
   );

@@ -3,10 +3,9 @@ import React from "react";
 
 const TodoItem = ({ item }) => {
 
-  const formattedDate = new Intl.DateTimeFormat("en-US", {
-    year: "numeric",
-    month: "short",
+  const formattedDate = new Intl.DateTimeFormat("en-NZ", {
     day: "numeric",
+    month: "short",
     hour: "numeric",
     minute: "numeric",
     second: "numeric",
@@ -25,7 +24,6 @@ const TodoItem = ({ item }) => {
       <View style={{ width: "100%", flex: 1 }}>
         <View style={{ alignItems: "center", flex: 1, flexDirection: "row" }}>
           <Text>{item.name}</Text>
-          <Text>{item.Date}</Text>
           <Text>{formattedDate}</Text>
         </View>
       </View>
