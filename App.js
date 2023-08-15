@@ -19,28 +19,32 @@ export default function App() {
 
 
 
+  useEffect(() => {
+    const fetchData = async () => {
+      const storedData = await getStorage();
+      setListData(storedData);
+    };
+    fetchData();
+  }, []);
+
+
+
+  // This is the AsyncStorage directly in the useEffect
   // useEffect(() => {
   //   const fetchData = async () => {
-  //     const storedData = await getStorage();
-  //     setListData(storedData);
+  //   try {
+  //     const storedData = await AsyncStorage.getItem("reminder-list");
+  //     if (storedData != null) {
+  //       setListData(JSON.parse(storedData));
+  //     }
+  // } catch (error) {
+  //     console.log(error);
+  // }
   //   };
   //   fetchData();
   // }, []);
 
 
-  useEffect(() => {
-    const fetchData = async () => {
-    try {
-      const storedData = await AsyncStorage.getItem("reminder-list");
-      if (storedData != null) {
-        setListData(JSON.parse(storedData));
-      }
-  } catch (error) {
-      console.log(error);
-  }
-    };
-    fetchData();
-  }, []);
 
   useEffect(() => {
     const storeData = async (array) => {
@@ -57,7 +61,20 @@ export default function App() {
     storeData(listData);
   }, [listData]);
 
-
+// useEffect (() => {
+//   const storeData = async (array) => {
+//     if (array.length > 0) {
+//       try {
+//         //const jsonValue = JSON.stringify(array);
+//         await updateStorage(array);
+//         console.log("Data saved successfully")
+//       } catch (error) {
+//         console.log(error);
+//       }
+//     }
+//   };
+//   storeData(listData);
+// }, [listData]);
   
 
 
@@ -182,7 +199,7 @@ listData.forEach(item => {
           setDateTimePickerMode("time");
           setShowDatePicker(true);
         } else if (dateTimePickerMode === "time") {
-          const newDate = new Date(selectedDate);
+          const newDate = new Date(parseInt(selectedDate));
           addTask(newDate); // Pass the selectedDate directly
         }
       } else {
