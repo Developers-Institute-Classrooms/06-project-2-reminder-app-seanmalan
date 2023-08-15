@@ -97,11 +97,11 @@ listData.forEach(item => {
   //   };
   // }, []);
 
-  // const closeRow = (rowMap, key) => {
-  //   if (rowMap[key]) {
-  //     rowMap[key].closeRow();
-  //   }
-  // };
+  const closeRow = (rowMap, key) => {
+    if (rowMap[key]) {
+      rowMap[key].closeRow();
+    }
+  };
 
   const onRowDidOpen = (rowKey) => {
     console.log("This row opened", rowKey);
