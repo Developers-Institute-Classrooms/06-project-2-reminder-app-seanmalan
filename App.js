@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import { View, Text } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { useEffect } from "react";
@@ -8,6 +7,7 @@ import TodoItemButtons from "./components/TodoItemButtons";
 import AddTodo from "./components/AddTodo";
 import { getStorage, updateStorage } from "./api/localStorage";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
   const [listData, setListData] = useState([]);
@@ -17,9 +17,50 @@ export default function App() {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
 
-  // console.log(`This is the ListData: ${listData}`)
-  // console.log(`This is the TaskName: ${taskName}`)
-  // console.log('taskName: ', taskName)
+
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const storedData = await getStorage();
+  //     setListData(storedData);
+  //   };
+  //   fetchData();
+  // }, []);
+
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //   try {
+  //     const storedData = await AsyncStorage.getItem("reminder-list");
+  //     if (storedData != null) {
+  //       setListData(JSON.parse(storedData));
+  //     }
+  // } catch (error) {
+  //     console.log(error);
+  // }
+  //   };
+  //   fetchData();
+  // }, []);
+
+  useEffect(() => {
+    const storeData = async (array) => {
+      if (array.length > 0) {
+        try {
+          const jsonValue = JSON.stringify(array);
+          await AsyncStorage.setItem("reminder-list", jsonValue);
+          console.log("Data saved successfully")
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    storeData(listData);
+  }, [listData]);
+
+
+  
+
+
 
   console.log("List Data:");
 listData.forEach(item => {
@@ -33,7 +74,7 @@ listData.forEach(item => {
     const newData = [...listData];
     newData.push({
       name: taskName,
-      timestamp: dateTime.toString(),
+      timestamp: dateTime,
       key: new Date().getTime().toString(),
     });
     
@@ -129,35 +170,28 @@ listData.forEach(item => {
       </View>
 
       {showDatePicker ? (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={new Date()}
-          // @ts-ignore
-          mode={dateTimePickerMode}
-          onChange={(event, dateString) => {
-            setShowDatePicker(false);
-            if (dateString) {
-              if (dateTimePickerMode === "date") {
-                const date = new Date(dateString) || new Date();
-                setSelectedDate(date);
-                setDateTimePickerMode("time");
-                setShowDatePicker(true);
-              } else if (dateTimePickerMode === "time") {
-                const time = new Date(dateString) || new Date();
-                const hours = time.getHours();
-                const minutes = time.getMinutes();
-                const seconds = 0;
-                const newDate = new Date(selectedDate);
-                newDate.setHours(hours, minutes, seconds);
-                setSelectedDate(newDate);
-                addTask(new Date());
-              }
-            } else {
-              setDateTimePickerMode("date");
-            }
-          }}
-        />
-      ) : null}
+  <DateTimePicker
+    testID="dateTimePicker"
+    value={selectedDate} // Use selectedDate here
+    mode={dateTimePickerMode}
+    onChange={(event, selectedDate) => {
+      setShowDatePicker(false);
+      if (selectedDate) {
+        if (dateTimePickerMode === "date") {
+          setSelectedDate(selectedDate);
+          setDateTimePickerMode("time");
+          setShowDatePicker(true);
+        } else if (dateTimePickerMode === "time") {
+          const newDate = new Date(selectedDate);
+          addTask(newDate); // Pass the selectedDate directly
+        }
+      } else {
+        setDateTimePickerMode("date");
+      }
+    }}
+  />
+) : null}
+
     </View>
   );
 }
