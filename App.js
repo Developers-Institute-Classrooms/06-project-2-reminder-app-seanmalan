@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import { View, Text } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { useEffect } from "react";
@@ -8,6 +7,7 @@ import TodoItemButtons from "./components/TodoItemButtons";
 import AddTodo from "./components/AddTodo";
 import { getStorage, updateStorage } from "./api/localStorage";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
   const [listData, setListData] = useState([]);
@@ -20,6 +20,22 @@ export default function App() {
   
   
   
+
+  useEffect(() => {
+    const storeData = async (array) => {
+      if (array.length > 0) {
+        try {
+          const jsonValue = JSON.stringify(array);
+          await AsyncStorage.setItem("reminder-list", jsonValue);
+          console.log("Data saved successfully")
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    storeData(listData);
+  }, [listData]);
+
 
   console.log(`This is the ListData: ${listData}`)
   console.log(`This is the TaskName: ${taskName}`)
