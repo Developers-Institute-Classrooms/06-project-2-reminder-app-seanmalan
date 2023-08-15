@@ -21,16 +21,24 @@ const AddTodo = ({ AddTodo }) => {
   const newAdd = (n) => {
     newName(n.name);
   };
+
+
   const newAddName = (e) => {
     setName(e);
   };
+
+
   const newName = (a) => {
     newAddName(a);
   };
-  const test = () => {
-    console.log(name);
-    add(name);
-  };
+
+
+  // const test = () => {
+  //   console.log(name);
+  //   add(name);
+  // };
+
+  
   return (
     <View style={styles.container}>
       <View style={styles.newContainer}>
@@ -42,7 +50,7 @@ const AddTodo = ({ AddTodo }) => {
         ></TextInput>
       </View>
       <Button title="Add" onPress={newAdd}></Button>
-      <Button title="test" onPress={AddTodo}></Button>
+      <Button title="test" onPress={() => AddTodo(name.toString())}></Button>
     </View>
   );
 };

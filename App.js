@@ -19,6 +19,7 @@ export default function App() {
 
   console.log(`This is the ListData: ${listData}`)
   console.log(`This is the TaskName: ${taskName}`)
+  console.log('taskName: ', taskName)
 
 
   const addTask = (dateTime) => {
@@ -28,7 +29,12 @@ export default function App() {
       timestamp: dateTime.toString(),
       key: new Date().getTime().toString(),
     });
-    setListData(newData);
+    console.log(`Name: ${newData.name}`)
+    // console.log(`Timestamp: ${newData.timestamp}`)
+    // console.log(`Key: ${newData.key}`)
+
+
+    // setListData(newData);
     setDateTimePickerMode("date");
   };
 
@@ -57,8 +63,11 @@ export default function App() {
     console.log("This row opened", rowKey);
   };
 
-  const add = (name) => {
-    setTaskName(name);
+
+
+  const add = (task) => {
+    console.log(`Im inside setTask: ${task.toString()}`)
+    setTaskName(task.toString());
     setSelectedDate(new Date());
     setShowDatePicker(true);
   };
