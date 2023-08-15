@@ -32,9 +32,7 @@ export default function App() {
     console.log(`Name: ${newData.name}`)
     // console.log(`Timestamp: ${newData.timestamp}`)
     // console.log(`Key: ${newData.key}`)
-
-
-    // setListData(newData);
+    setListData(newData);
     setDateTimePickerMode("date");
   };
 
@@ -67,7 +65,7 @@ export default function App() {
 
   const add = (task) => {
     console.log(`Im inside setTask: ${task.toString()}`)
-    setTaskName(task.toString());
+    setTaskName(task);
     setSelectedDate(new Date());
     setShowDatePicker(true);
   };

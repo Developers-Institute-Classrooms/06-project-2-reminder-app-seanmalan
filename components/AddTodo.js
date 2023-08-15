@@ -18,9 +18,9 @@ const AddTodo = ({ AddTodo }) => {
   console.log(`AddTodo name: ${name}`)
 
 
-  const newAdd = (n) => {
-    newName(n.name);
-  };
+  // const newAdd = (n) => {
+  //   newName(n.name);
+  // };
 
 
   const newAddName = (e) => {
@@ -49,8 +49,8 @@ const AddTodo = ({ AddTodo }) => {
           onChangeText={(e) => newAddName(e)}
         ></TextInput>
       </View>
-      <Button title="Add" onPress={newAdd}></Button>
-      <Button title="test" onPress={() => AddTodo(name.toString())}></Button>
+      {/* <Button title="Add" onPress={newAdd}></Button> */}
+      <Button title="Add" onPress={() => AddTodo(name.toString())}></Button>
     </View>
   );
 };
