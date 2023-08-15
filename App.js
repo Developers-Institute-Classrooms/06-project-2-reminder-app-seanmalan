@@ -28,19 +28,19 @@ export default function App() {
   // }, []);
 
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //   try {
-  //     const storedData = await AsyncStorage.getItem("reminder-list");
-  //     if (storedData != null) {
-  //       setListData(JSON.parse(storedData));
-  //     }
-  // } catch (error) {
-  //     console.log(error);
-  // }
-  //   };
-  //   fetchData();
-  // }, []);
+  useEffect(() => {
+    const fetchData = async () => {
+    try {
+      const storedData = await AsyncStorage.getItem("reminder-list");
+      if (storedData != null) {
+        setListData(JSON.parse(storedData));
+      }
+  } catch (error) {
+      console.log(error);
+  }
+    };
+    fetchData();
+  }, []);
 
   useEffect(() => {
     const storeData = async (array) => {
