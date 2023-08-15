@@ -14,8 +14,23 @@ export default function App() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [dateTimePickerMode, setDateTimePickerMode] = useState("date");
   const [taskName, setTaskName] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
-
+  const [date, setDate] = useState(new Date());
+  const [isEnabled, setIsEnabled] = useState(false);
+  const [text, setText] = useState('Empty')
+  
+  
+  
+  // const toggleSwitch = () => {
+  //   setIsEnabled(previousState => !previousState);
+  //   if (isEnabled) {
+  //     console.log(`I am set to All day`)
+  //     setDateTimePickerMode("date");
+  //   } else {
+  //     console.log(`I am set to date and Time`)
+  //     setDateTimePickerMode("time");
+  //   }
+  // };
+  
 
   // console.log(`This is the ListData: ${listData}`)
   // console.log(`This is the TaskName: ${taskName}`)
@@ -38,13 +53,29 @@ listData.forEach(item => {
     });
     
     setListData(newData);
-    setDateTimePickerMode("date");
+    // setDateTimePickerMode("date");
   };
 
-  // const datePickerMode = (currentMode) => {
-  //   setShowDatePicker(true);
-  //   setDateTimePickerMode(currentMode);
-  // };
+
+const onChange = (event, selectedDate) => {
+  const currentDate = selectedDate || date;
+  setDate(currentDate);
+  
+  let tempDate = new Date(currentDate);
+  let formattedDate = tempDate.getDate() + "/" + (tempDate.getMonth() + 1) + "/" + tempDate.getFullYear();
+  let formattedTime = tempDate.getHours() + ":" + tempDate.getMinutes();
+
+  setText(formattedDate + '\n' + formattedTime);
+  console.log(formattedDate + '\n' + formattedTime);
+  console.log(`Text: ${text}`)
+
+
+}
+  const datePickerMode = (currentMode) => {
+    //setShowDatePicker(true);
+    setIsEnabled(true);
+    setDateTimePickerMode(currentMode);
+  };
 
   // let isMounted = false;
 
@@ -71,12 +102,16 @@ listData.forEach(item => {
   const add = (task) => {
     console.log(`Im inside setTask: ${task.toString()}`)
     setTaskName(task);
-    setSelectedDate(new Date());
+    setDate(new Date());
     setShowDatePicker(true);
+  
+    if (isEnabled) {
+      setDateTimePickerMode("date");
+    } else {
+      setDateTimePickerMode("time");
+    }
   };
-
-
-
+  
 
   return (
     <View style={{ height: "100%" }}>
@@ -99,7 +134,33 @@ listData.forEach(item => {
         </Text>
         <AddTodo
           AddTodo={add}
+          text={text}
+          onChange={onChange}
+          show={isEnabled}
+          date={date}
+          mode={dateTimePickerMode}
+          datePickerMode={datePickerMode}
         />
+
+        <Text>{text}</Text>
+
+        
+
+        {/* <View>
+        <Text>All Day</Text>
+        <Switch
+        trackColor={{false: '#767577', true: '#81b0ff'}}
+        thumbColor={isEnabled ? '#f5dd4b' : '#f4f3f4'}
+        ios_backgroundColor="#3e3e3e"
+        onValueChange={toggleSwitch}
+        value={isEnabled}
+      />
+        </View> */}
+
+
+
+
+
         <View
           style={{
             backgroundColor: "white",
@@ -139,7 +200,7 @@ listData.forEach(item => {
             if (dateString) {
               if (dateTimePickerMode === "date") {
                 const date = new Date(dateString) || new Date();
-                setSelectedDate(date);
+                setDate(date);
                 setDateTimePickerMode("time");
                 setShowDatePicker(true);
               } else if (dateTimePickerMode === "time") {
@@ -147,9 +208,9 @@ listData.forEach(item => {
                 const hours = time.getHours();
                 const minutes = time.getMinutes();
                 const seconds = 0;
-                const newDate = new Date(selectedDate);
+                const newDate = new Date(date);
                 newDate.setHours(hours, minutes, seconds);
-                setSelectedDate(newDate);
+                setDate(newDate);
                 addTask(new Date());
               }
             } else {
