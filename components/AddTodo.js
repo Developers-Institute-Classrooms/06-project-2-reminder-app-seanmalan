@@ -1,17 +1,20 @@
 import React, { useState } from "react";
 import { TextInput, View, Button, StyleSheet, TouchableOpacity, Text } from "react-native";
 
-// TIP: this component has bad naming that creates confusion
+
 const AddTodo = ({ AddTodo }) => {
   const [name, setName] = useState("");
 
-  console.log(`AddTodo name: ${name}`);
 
   const newAddName = (e) => {
     setName(e);
   };
 
-  
+  const handleAddTask = () => {
+    AddTodo(name.toString());
+    setName(""); // Reset the name state to clear the TextInput
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.newContainer}>
@@ -24,7 +27,7 @@ const AddTodo = ({ AddTodo }) => {
       </View>
 
       {name.length > 0 && (
-      <TouchableOpacity title="Add" onPress={() => AddTodo(name.toString())} style={styles.button}><Text>Add Task</Text></TouchableOpacity>
+      <TouchableOpacity title="Add" onPress={handleAddTask} style={styles.button}><Text>Add Task</Text></TouchableOpacity>
       )}
     </View>
   );
@@ -45,7 +48,10 @@ const styles = StyleSheet.create({
     width: "96%",
     alignSelf: "center",
   },
-  newContainer: { flexGrow: 1 },
+  newContainer: { 
+    flexGrow: 1 },
+
+
   text: { 
     width: "100%", 
     height: "100%",
@@ -63,10 +69,9 @@ const styles = StyleSheet.create({
       justifyContent: "center",
       alignItems: "center",
       padding: 10,
-      
-      backgroundColor: "#99ccff",
+      backgroundColor: "#38A2D7",
       borderRadius: 5,
-      borderColor: "#808080",
+      borderColor: "#FCCF47",
       borderWidth: 1,
    }
 });
