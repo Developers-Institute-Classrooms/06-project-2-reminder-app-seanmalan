@@ -15,9 +15,7 @@ export default function App() {
   const [dateTimePickerMode, setDateTimePickerMode] = useState("date");
   const [taskName, setTaskName] = useState("");
   const [date, setDate] = useState(new Date());
-  
-  
-  
+
   useEffect(() => {
     const getData = async () => {
       try {
@@ -32,15 +30,13 @@ export default function App() {
     getData();
   }, []);
 
-  
-
   useEffect(() => {
     const storeData = async (array) => {
       if (array.length > 0) {
         try {
           const jsonValue = JSON.stringify(array);
           await AsyncStorage.setItem("reminder-list", jsonValue);
-          console.log("Data saved successfully")
+          console.log("Data saved successfully");
         } catch (error) {
           console.log(error);
         }
@@ -49,18 +45,16 @@ export default function App() {
     storeData(listData);
   }, [listData]);
 
-
-  console.log(`This is the ListData: ${listData}`)
-  console.log(`This is the TaskName: ${taskName}`)
-  console.log('taskName: ', taskName)
+  console.log(`This is the ListData: ${listData}`);
+  console.log(`This is the TaskName: ${taskName}`);
+  console.log("taskName: ", taskName);
 
   console.log("List Data:");
-listData.forEach(item => {
-  console.log("Name:", item.name);
-  console.log("Timestamp:", item.timestamp);
-  console.log("Key:", item.key);
-});
-
+  listData.forEach((item) => {
+    console.log("Name:", item.name);
+    console.log("Timestamp:", item.timestamp);
+    console.log("Key:", item.key);
+  });
 
   const addTask = (dateTime) => {
     const newData = [...listData];
@@ -69,12 +63,10 @@ listData.forEach(item => {
       timestamp: dateTime.toString(),
       key: new Date().getTime().toString(),
     });
-    
+
     setListData(newData);
     setDateTimePickerMode("date");
   };
-
-
 
   const datePickerMode = (currentMode) => {
     setShowDatePicker(true);
@@ -101,15 +93,12 @@ listData.forEach(item => {
     console.log("This row opened", rowKey);
   };
 
-
-
   const add = (task) => {
-    console.log(`Im inside setTask: ${task.toString()}`)
+    console.log(`Im inside setTask: ${task.toString()}`);
     setTaskName(task);
     setDate(new Date());
     setShowDatePicker(true);
   };
-  
 
   return (
     <View style={{ height: "100%" }}>
@@ -122,19 +111,6 @@ listData.forEach(item => {
           height: "100%",
         }}
       >
-        <Text
-          style={{
-            textAlign: "center",
-            fontSize: 20,
-          }}
-        >
-          Reminders
-        </Text>
-        <AddTodo
-          AddTodo={add}
-          
-        />
-
         <View
           style={{
             backgroundColor: "white",
@@ -160,6 +136,19 @@ listData.forEach(item => {
             previewOpenDelay={3000}
             onRowDidOpen={onRowDidOpen}
           />
+
+          <View>
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 26,
+                marginBottom: 20,
+              }}
+            >
+              Reminders
+            </Text>
+            <AddTodo AddTodo={add} />
+          </View>
         </View>
       </View>
 
@@ -170,6 +159,7 @@ listData.forEach(item => {
           // @ts-ignore
           mode={dateTimePickerMode}
           onChange={(event, dateString) => {
+            console.log(`I am datestring: ${dateString}`)
             setShowDatePicker(false);
             if (dateString) {
               if (dateTimePickerMode === "date") {
