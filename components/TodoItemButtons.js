@@ -6,12 +6,15 @@ const TodoItemButtons = (data, rowMap, deleteRow) => (
   <View style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end" }}>
     <Pressable
       style={({ pressed }) => ({
-        backgroundColor: pressed ? "blue" : "aqua",
-        width: 50,
+        backgroundColor: pressed ? "red" : "tomato",
+        width: 100,
       })}
       onPress={() => deleteRow(rowMap, data.item.key)}
     >
-      <MaterialIcons name="delete" />
+      <View style={{ alignContent: "center", alignSelf: "center"}}>
+
+      <MaterialIcons name="delete" size={40} />
+      </View>
     </Pressable>
   </View>
 );

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import {React, useState } from "react";
 import { View, Text } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { useEffect } from "react";
@@ -98,10 +98,7 @@ export default function App() {
     if (task === null || task === "") {
       return;
     }
-
-    console.log(`Im inside setTask: ${task.toString()}`);
     setTaskName(task);
-    console.log(`Im Task: ${task}`);
     setDate(new Date());
     setShowDatePicker(true);
   };
@@ -117,6 +114,15 @@ export default function App() {
           height: "100%",
         }}
       >
+        <Text
+              style={{
+                textAlign: "center",
+                fontSize: 26,
+                marginBottom: 20,
+              }}
+            >
+              Reminders
+            </Text>
         <View
           style={{
             backgroundColor: "white",
@@ -136,7 +142,7 @@ export default function App() {
                 setListData(newData);
               })
             }
-            rightOpenValue={-130}
+            rightOpenValue={-100}
             previewRowKey={"0"}
             previewOpenValue={-40}
             previewOpenDelay={3000}
@@ -144,15 +150,7 @@ export default function App() {
           />
 
           <View>
-            <Text
-              style={{
-                textAlign: "center",
-                fontSize: 26,
-                marginBottom: 20,
-              }}
-            >
-              Reminders
-            </Text>
+            
             <AddTodo AddTodo={add} />
           </View>
         </View>
@@ -166,9 +164,6 @@ export default function App() {
           mode={dateTimePickerMode}
           onChange={(event, dateString) => {
             setShowDatePicker(false);
-            console.log(`I am datestring: ${dateString}`)
-            console.log(`I am event: ${event.type}`)
-
             if (event.type === "dismissed") {
               return;
             }
