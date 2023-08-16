@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import { View, Text } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import { useEffect } from "react";
@@ -8,26 +7,54 @@ import TodoItemButtons from "./components/TodoItemButtons";
 import AddTodo from "./components/AddTodo";
 import { getStorage, updateStorage } from "./api/localStorage";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function App() {
   const [listData, setListData] = useState([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [dateTimePickerMode, setDateTimePickerMode] = useState("date");
   const [taskName, setTaskName] = useState("");
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [date, setDate] = useState(new Date());
 
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const jsonValue = await AsyncStorage.getItem("reminder-list");
+        if (jsonValue !== null) {
+          setListData(JSON.parse(jsonValue));
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getData();
+  }, []);
 
-  // console.log(`This is the ListData: ${listData}`)
-  // console.log(`This is the TaskName: ${taskName}`)
-  // console.log('taskName: ', taskName)
+  useEffect(() => {
+    const storeData = async (array) => {
+      if (array.length > 0) {
+        try {
+          const jsonValue = JSON.stringify(array);
+          await AsyncStorage.setItem("reminder-list", jsonValue);
+          console.log("Data saved successfully");
+        } catch (error) {
+          console.log(error);
+        }
+      }
+    };
+    storeData(listData);
+  }, [listData]);
+
+  console.log(`This is the ListData: ${listData}`);
+  console.log(`This is the TaskName: ${taskName}`);
+  console.log("taskName: ", taskName);
 
   console.log("List Data:");
-listData.forEach(item => {
-  console.log("Name:", item.name);
-  console.log("Timestamp:", item.timestamp);
-  console.log("Key:", item.key);
-});
-
+  listData.forEach((item) => {
+    console.log("Name:", item.name);
+    console.log("Timestamp:", item.timestamp);
+    console.log("Key:", item.key);
+  });
 
   const addTask = (dateTime) => {
     const newData = [...listData];
@@ -36,15 +63,15 @@ listData.forEach(item => {
       timestamp: dateTime.toString(),
       key: new Date().getTime().toString(),
     });
-    
+
     setListData(newData);
     setDateTimePickerMode("date");
   };
 
-  // const datePickerMode = (currentMode) => {
-  //   setShowDatePicker(true);
-  //   setDateTimePickerMode(currentMode);
-  // };
+  const datePickerMode = (currentMode) => {
+    setShowDatePicker(true);
+    setDateTimePickerMode(currentMode);
+  };
 
   // let isMounted = false;
 
@@ -56,27 +83,22 @@ listData.forEach(item => {
   //   };
   // }, []);
 
-  // const closeRow = (rowMap, key) => {
-  //   if (rowMap[key]) {
-  //     rowMap[key].closeRow();
-  //   }
-  // };
+  const closeRow = (rowMap, key) => {
+    if (rowMap[key]) {
+      rowMap[key].closeRow();
+    }
+  };
 
   const onRowDidOpen = (rowKey) => {
     console.log("This row opened", rowKey);
   };
 
-
-
   const add = (task) => {
-    console.log(`Im inside setTask: ${task.toString()}`)
+    console.log(`Im inside setTask: ${task.toString()}`);
     setTaskName(task);
-    setSelectedDate(new Date());
+    setDate(new Date());
     setShowDatePicker(true);
   };
-
-
-
 
   return (
     <View style={{ height: "100%" }}>
@@ -89,17 +111,6 @@ listData.forEach(item => {
           height: "100%",
         }}
       >
-        <Text
-          style={{
-            textAlign: "center",
-            fontSize: 20,
-          }}
-        >
-          Reminders
-        </Text>
-        <AddTodo
-          AddTodo={add}
-        />
         <View
           style={{
             backgroundColor: "white",
@@ -125,21 +136,35 @@ listData.forEach(item => {
             previewOpenDelay={3000}
             onRowDidOpen={onRowDidOpen}
           />
+
+          <View>
+            <Text
+              style={{
+                textAlign: "center",
+                fontSize: 26,
+                marginBottom: 20,
+              }}
+            >
+              Reminders
+            </Text>
+            <AddTodo AddTodo={add} />
+          </View>
         </View>
       </View>
 
       {showDatePicker ? (
         <DateTimePicker
           testID="dateTimePicker"
-          value={new Date()}
+          value={date}
           // @ts-ignore
           mode={dateTimePickerMode}
           onChange={(event, dateString) => {
+            console.log(`I am datestring: ${dateString}`)
             setShowDatePicker(false);
             if (dateString) {
               if (dateTimePickerMode === "date") {
                 const date = new Date(dateString) || new Date();
-                setSelectedDate(date);
+                setDate(date);
                 setDateTimePickerMode("time");
                 setShowDatePicker(true);
               } else if (dateTimePickerMode === "time") {
@@ -147,10 +172,10 @@ listData.forEach(item => {
                 const hours = time.getHours();
                 const minutes = time.getMinutes();
                 const seconds = 0;
-                const newDate = new Date(selectedDate);
-                newDate.setHours(hours, minutes, seconds);
-                setSelectedDate(newDate);
-                addTask(new Date());
+                const updatedDate = new Date(date);
+                updatedDate.setHours(hours, minutes, seconds);
+                setDate(updatedDate);
+                addTask(updatedDate);
               }
             } else {
               setDateTimePickerMode("date");
