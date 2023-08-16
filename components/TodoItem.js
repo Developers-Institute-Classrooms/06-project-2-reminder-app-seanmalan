@@ -28,13 +28,12 @@ const TodoItem = ({ item }) => {
             flexDirection: "row",
             justifyContent: "space-between",
             alignSelf: "center",
-            padding: 10,
             margin: 2,
-            backgroundColor: "#e6e6e6",
+            backgroundColor: "#A0EBCF",
             borderWidth: 1,
             borderRadius: 5,
             borderColor: "#808080",
-            height: 160,
+            height: "150%",
             width: "96%",
 
           }}
