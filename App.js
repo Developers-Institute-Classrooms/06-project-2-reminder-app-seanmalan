@@ -69,10 +69,6 @@ export default function App() {
     setDateTimePickerMode("date");
   };
 
-  // const datePickerMode = (currentMode) => {
-  //   setShowDatePicker(true);
-  //   setDateTimePickerMode(currentMode);
-  // };
 
   // let isMounted = false;
 
