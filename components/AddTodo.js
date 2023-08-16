@@ -11,11 +11,7 @@ const AddTodo = ({ AddTodo }) => {
     setName(e);
   };
 
-  // const test = () => {
-  //   console.log(name);
-  //   add(name);
-  // };
-
+  
   return (
     <View style={styles.container}>
       <View style={styles.newContainer}>
@@ -27,7 +23,9 @@ const AddTodo = ({ AddTodo }) => {
         ></TextInput>
       </View>
 
+      {name.length > 0 && (
       <TouchableOpacity title="Add" onPress={() => AddTodo(name.toString())} style={styles.button}><Text>Add Task</Text></TouchableOpacity>
+      )}
     </View>
   );
 };

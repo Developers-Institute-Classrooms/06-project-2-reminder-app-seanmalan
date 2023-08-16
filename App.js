@@ -95,8 +95,13 @@ export default function App() {
   };
 
   const add = (task) => {
-    // console.log(`Im inside setTask: ${task.toString()}`);
+    if (task === null || task === "") {
+      return;
+    }
+
+    console.log(`Im inside setTask: ${task.toString()}`);
     setTaskName(task);
+    console.log(`Im Task: ${task}`);
     setDate(new Date());
     setShowDatePicker(true);
   };
@@ -168,7 +173,7 @@ export default function App() {
               return;
             }
 
-            
+
             if (dateString) {
               if (dateTimePickerMode === "date") {
                 const date = new Date(dateString) || new Date();
