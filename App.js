@@ -46,17 +46,6 @@ export default function App() {
   }, [listData]);
 
 
-
-  // console.log(`This is the TaskName: ${taskName}`);
-  // console.log("taskName: ", taskName);
-
-  // console.log("List Data:");
-  // listData.forEach((item) => {
-  //   console.log("Name:", item.name);
-  //   console.log("Timestamp:", item.timestamp);
-  //   console.log("Key:", item.key);
-  // });
-
   const addTask = (dateTime) => {
     const newData = [...listData];
     newData.push({
