@@ -45,16 +45,17 @@ export default function App() {
     storeData(listData);
   }, [listData]);
 
-  console.log(`This is the ListData: ${listData}`);
-  console.log(`This is the TaskName: ${taskName}`);
-  console.log("taskName: ", taskName);
 
-  console.log("List Data:");
-  listData.forEach((item) => {
-    console.log("Name:", item.name);
-    console.log("Timestamp:", item.timestamp);
-    console.log("Key:", item.key);
-  });
+
+  // console.log(`This is the TaskName: ${taskName}`);
+  // console.log("taskName: ", taskName);
+
+  // console.log("List Data:");
+  // listData.forEach((item) => {
+  //   console.log("Name:", item.name);
+  //   console.log("Timestamp:", item.timestamp);
+  //   console.log("Key:", item.key);
+  // });
 
   const addTask = (dateTime) => {
     const newData = [...listData];
@@ -68,10 +69,10 @@ export default function App() {
     setDateTimePickerMode("date");
   };
 
-  const datePickerMode = (currentMode) => {
-    setShowDatePicker(true);
-    setDateTimePickerMode(currentMode);
-  };
+  // const datePickerMode = (currentMode) => {
+  //   setShowDatePicker(true);
+  //   setDateTimePickerMode(currentMode);
+  // };
 
   // let isMounted = false;
 
@@ -94,7 +95,7 @@ export default function App() {
   };
 
   const add = (task) => {
-    console.log(`Im inside setTask: ${task.toString()}`);
+    // console.log(`Im inside setTask: ${task.toString()}`);
     setTaskName(task);
     setDate(new Date());
     setShowDatePicker(true);
@@ -159,8 +160,15 @@ export default function App() {
           // @ts-ignore
           mode={dateTimePickerMode}
           onChange={(event, dateString) => {
-            console.log(`I am datestring: ${dateString}`)
             setShowDatePicker(false);
+            console.log(`I am datestring: ${dateString}`)
+            console.log(`I am event: ${event.type}`)
+
+            if (event.type === "dismissed") {
+              return;
+            }
+
+            
             if (dateString) {
               if (dateTimePickerMode === "date") {
                 const date = new Date(dateString) || new Date();
