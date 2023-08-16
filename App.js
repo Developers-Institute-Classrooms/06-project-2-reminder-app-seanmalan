@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { View, Text, TouchableOpacity } from "react-native";
+import { View, Text, TouchableOpacity, Alert, SafeAreaView } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import TodoItem from "./components/TodoItem";
 import TodoItemButtons from "./components/TodoItemButtons";
@@ -10,6 +10,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import FingerprintScanner from "react-native-fingerprint-scanner";
 import * as LocalAuthentication from "expo-local-authentication";
 
+
+
 export default function App() {
   const [listData, setListData] = useState([]);
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -17,49 +19,32 @@ export default function App() {
   const [taskName, setTaskName] = useState("");
   const [date, setDate] = useState(new Date());
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-
 
 
   useEffect(() => {
     async function authenticate() {
-      const result = LocalAuthentication.authenticateAsync()
-      setIsAuthenticated(result.success)
-  }
-  authenticate();
-}, []);
-
-
-
-if (!isAuthenticated) {
-
-  const handleFingerprintAuth = async () => {
-    try {
-      await FingerprintScanner.authenticate({
-        title: 'Fingerprint Authentication',
-        description: 'Place your finger on the sensor to authenticate.',
-      });
-      // Authentication successful
-      setErrorMessage(null);
-    } catch (error) {
-      // Authentication failed
-      setErrorMessage('Fingerprint authentication failed.');
+      try {
+        const result = await LocalAuthentication.authenticateAsync();
+        if (result.success) {
+          setIsAuthenticated(true);
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (error) {
+        console.error("Error during authentication:", error);
+        setIsAuthenticated(false);
+      }
     }
-  };
+  
+    authenticate();
+  }, []);
+  
 
-  return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text>It appears you have not been authenticated.</Text>
 
-    <TouchableOpacity onPress={handleFingerprintAuth}>
-        <Text>Authenticate with Fingerprint</Text>
-      </TouchableOpacity>
-    </View>
-  );
-}
 
 
   useEffect(() => {
+    if (isAuthenticated) {
     const getData = async () => {
       try {
         const jsonValue = await AsyncStorage.getItem("reminder-list");
@@ -71,9 +56,13 @@ if (!isAuthenticated) {
       }
     };
     getData();
-  }, []);
+  }
+  }, [isAuthenticated]);
+
+
 
   useEffect(() => {
+    if (isAuthenticated) {
     const storeData = async (array) => {
       if (array.length > 0) {
         try {
@@ -86,7 +75,8 @@ if (!isAuthenticated) {
       }
     };
     storeData(listData);
-  }, [listData]);
+  }
+  }, [listData, isAuthenticated]);
 
   const addTask = (dateTime) => {
     const newData = [...listData];
@@ -139,7 +129,9 @@ if (!isAuthenticated) {
   }, []);
 
   return (
+
     <View style={{ height: "100%" }}>
+    {isAuthenticated ? (
       <View
         style={{
           flex: 1,
@@ -190,6 +182,11 @@ if (!isAuthenticated) {
           </View>
         </View>
       </View>
+      ) : (
+        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <Text>Authenticating...</Text>
+  </View>
+      )}
 
       {showDatePicker ? (
         <DateTimePicker
@@ -223,8 +220,12 @@ if (!isAuthenticated) {
               setDateTimePickerMode("date");
             }
           }}
-        />
-      ) : null}
+          />
+          ) : null
+        }
+            
     </View>
+
+
   );
 }
