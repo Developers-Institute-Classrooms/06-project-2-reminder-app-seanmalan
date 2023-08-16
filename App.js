@@ -1,13 +1,14 @@
-import {React, useState } from "react";
-import { View, Text } from "react-native";
+import { React, useState, useEffect } from "react";
+import { View, Text, TouchableOpacity } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
-import { useEffect } from "react";
 import TodoItem from "./components/TodoItem";
 import TodoItemButtons from "./components/TodoItemButtons";
 import AddTodo from "./components/AddTodo";
 import { getStorage, updateStorage } from "./api/localStorage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import FingerprintScanner from "react-native-fingerprint-scanner";
+import * as LocalAuthentication from "expo-local-authentication";
 
 export default function App() {
   const [listData, setListData] = useState([]);
@@ -15,6 +16,48 @@ export default function App() {
   const [dateTimePickerMode, setDateTimePickerMode] = useState("date");
   const [taskName, setTaskName] = useState("");
   const [date, setDate] = useState(new Date());
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+
+
+  useEffect(() => {
+    async function authenticate() {
+      const result = LocalAuthentication.authenticateAsync()
+      setIsAuthenticated(result.success)
+  }
+  authenticate();
+}, []);
+
+
+
+if (!isAuthenticated) {
+
+  const handleFingerprintAuth = async () => {
+    try {
+      await FingerprintScanner.authenticate({
+        title: 'Fingerprint Authentication',
+        description: 'Place your finger on the sensor to authenticate.',
+      });
+      // Authentication successful
+      setErrorMessage(null);
+    } catch (error) {
+      // Authentication failed
+      setErrorMessage('Fingerprint authentication failed.');
+    }
+  };
+
+  return (
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>It appears you have not been authenticated.</Text>
+
+    <TouchableOpacity onPress={handleFingerprintAuth}>
+        <Text>Authenticate with Fingerprint</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
 
   useEffect(() => {
     const getData = async () => {
@@ -45,7 +88,6 @@ export default function App() {
     storeData(listData);
   }, [listData]);
 
-
   const addTask = (dateTime) => {
     const newData = [...listData];
     newData.push({
@@ -58,7 +100,6 @@ export default function App() {
     setDateTimePickerMode("date");
   };
 
-
   // let isMounted = false;
 
   // useEffect(() => {
@@ -68,6 +109,7 @@ export default function App() {
   //     isMounted = false;
   //   };
   // }, []);
+
 
   const closeRow = (rowMap, key) => {
     if (rowMap[key]) {
@@ -88,6 +130,14 @@ export default function App() {
     setShowDatePicker(true);
   };
 
+  
+
+  useEffect(() => {
+    return () => {
+      FingerprintScanner.release();
+    };
+  }, []);
+
   return (
     <View style={{ height: "100%" }}>
       <View
@@ -100,20 +150,21 @@ export default function App() {
         }}
       >
         <Text
-              style={{
-                textAlign: "center",
-                fontSize: 26,
-                marginBottom: 20,
-              }}
-            >
-              Reminders
-            </Text>
+          style={{
+            textAlign: "center",
+            fontSize: 26,
+            marginBottom: 20,
+          }}
+        >
+          Reminders
+        </Text>
         <View
           style={{
             backgroundColor: "white",
             flex: 1,
           }}
         >
+          
           <SwipeListView
             data={listData}
             renderItem={({ item }) => <TodoItem item={item} />}
@@ -135,7 +186,6 @@ export default function App() {
           />
 
           <View>
-            
             <AddTodo AddTodo={add} />
           </View>
         </View>
@@ -152,7 +202,6 @@ export default function App() {
             if (event.type === "dismissed") {
               return;
             }
-
 
             if (dateString) {
               if (dateTimePickerMode === "date") {
