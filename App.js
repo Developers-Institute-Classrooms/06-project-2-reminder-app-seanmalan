@@ -4,11 +4,12 @@ import { SwipeListView } from "react-native-swipe-list-view";
 import TodoItem from "./components/TodoItem";
 import TodoItemButtons from "./components/TodoItemButtons";
 import AddTodo from "./components/AddTodo";
-import { getStorage, updateStorage } from "./api/localStorage";
+import { getStorage, updateStorage } from "./api/LocalStorage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FingerprintScanner from "react-native-fingerprint-scanner";
 import * as LocalAuthentication from "expo-local-authentication";
+import { setNotification } from "./api/notification";
 
 
 
@@ -19,6 +20,10 @@ export default function App() {
   const [taskName, setTaskName] = useState("");
   const [date, setDate] = useState(new Date());
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    registerForPushNotificationsAsync()
+  }, []);
 
 
   useEffect(() => {
@@ -78,6 +83,8 @@ export default function App() {
   }
   }, [listData, isAuthenticated]);
 
+
+  
   const addTask = (dateTime) => {
     const newData = [...listData];
     newData.push({
@@ -88,17 +95,13 @@ export default function App() {
 
     setListData(newData);
     setDateTimePickerMode("date");
+    setNotification({
+      timestamp: date,
+      title: taskName,
+      body: "Reminder",
+    });
   };
 
-  // let isMounted = false;
-
-  // useEffect(() => {
-  //   isMounted = true;
-  //   // console.warn("app mounted");
-  //   return () => {
-  //     isMounted = false;
-  //   };
-  // }, []);
 
 
   const closeRow = (rowMap, key) => {
