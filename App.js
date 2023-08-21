@@ -122,6 +122,15 @@ export default function App() {
     setShowDatePicker(true);
   };
 
+  // create a function that deletes the task from the list
+  const deleteTask = (key) => {
+    const newData = [...listData];
+    const i = newData.findIndex((item) => item.key === key);
+    newData.splice(i, 1);
+    setListData(newData);
+  };
+
+
   useEffect(() => {
     return () => {
       FingerprintScanner.release();
@@ -162,10 +171,7 @@ export default function App() {
                 TodoItemButtons(data, rowMap, (rowMap, deleteThis) => {
                   // TIP: deletes a task/row
                   closeRow(rowMap, deleteThis);
-                  const newData = [...listData];
-                  const i = newData.findIndex((rowItem) => rowItem.key === 0);
-                  newData.splice(i, 1);
-                  setListData(newData);
+                  deleteTask(data.item.key);
                 })
               }
               rightOpenValue={-100}
