@@ -103,9 +103,6 @@ import React from 'react'
 
 
 export async function schedulePushNotification(title, date) {
-  date.setSeconds(date.getSeconds() + 10);
-  console.log(typeof date)
-  console.log(date)
   await Notifications.scheduleNotificationAsync({
     content: {
       title: title,
