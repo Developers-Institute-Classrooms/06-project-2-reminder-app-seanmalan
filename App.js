@@ -2,8 +2,6 @@ import { React, useState, useEffect } from "react";
 import {
   View,
   Text,
-  TouchableOpacity,
-  Alert,
   SafeAreaView,
 } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
