@@ -1,5 +1,11 @@
 import { React, useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, Alert, SafeAreaView } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  Alert,
+  SafeAreaView,
+} from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import TodoItem from "./components/TodoItem";
 import TodoItemButtons from "./components/TodoItemButtons";
@@ -9,9 +15,19 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FingerprintScanner from "react-native-fingerprint-scanner";
 import * as LocalAuthentication from "expo-local-authentication";
-import { setNotification } from "./api/notification";
+import * as Notifications from "expo-notifications";
+import {
+  registerForPushNotificationsAsync,
+  schedulePushNotification,
+} from "./api/notification";
 
-
+Notifications.setNotificationHandler({
+  handleNotification: async () => ({
+    shouldShowAlert: true,
+    shouldPlaySound: false,
+    shouldSetBadge: false,
+  }),
+});
 
 export default function App() {
   const [listData, setListData] = useState([]);
@@ -22,9 +38,8 @@ export default function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
-    registerForPushNotificationsAsync()
+    registerForPushNotificationsAsync();
   }, []);
-
 
   useEffect(() => {
     async function authenticate() {
@@ -40,51 +55,43 @@ export default function App() {
         setIsAuthenticated(false);
       }
     }
-  
+
     authenticate();
   }, []);
-  
-
-
-
 
   useEffect(() => {
     if (isAuthenticated) {
-    const getData = async () => {
-      try {
-        const jsonValue = await AsyncStorage.getItem("reminder-list");
-        if (jsonValue !== null) {
-          setListData(JSON.parse(jsonValue));
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getData();
-  }
-  }, [isAuthenticated]);
-
-
-
-  useEffect(() => {
-    if (isAuthenticated) {
-    const storeData = async (array) => {
-      if (array.length > 0) {
+      const getData = async () => {
         try {
-          const jsonValue = JSON.stringify(array);
-          await AsyncStorage.setItem("reminder-list", jsonValue);
-          console.log("Data saved successfully");
+          const jsonValue = await AsyncStorage.getItem("reminder-list");
+          if (jsonValue !== null) {
+            setListData(JSON.parse(jsonValue));
+          }
         } catch (error) {
           console.log(error);
         }
-      }
-    };
-    storeData(listData);
-  }
+      };
+      getData();
+    }
+  }, [isAuthenticated]);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      const storeData = async (array) => {
+        if (array.length > 0) {
+          try {
+            const jsonValue = JSON.stringify(array);
+            await AsyncStorage.setItem("reminder-list", jsonValue);
+            console.log("Data saved successfully");
+          } catch (error) {
+            console.log(error);
+          }
+        }
+      };
+      storeData(listData);
+    }
   }, [listData, isAuthenticated]);
 
-
-  
   const addTask = (dateTime) => {
     const newData = [...listData];
     newData.push({
@@ -95,14 +102,8 @@ export default function App() {
 
     setListData(newData);
     setDateTimePickerMode("date");
-    setNotification({
-      timestamp: date,
-      title: taskName,
-      body: "Reminder",
-    });
+    schedulePushNotification(taskName, dateTime);
   };
-
-
 
   const closeRow = (rowMap, key) => {
     if (rowMap[key]) {
@@ -123,8 +124,6 @@ export default function App() {
     setShowDatePicker(true);
   };
 
-  
-
   useEffect(() => {
     return () => {
       FingerprintScanner.release();
@@ -132,63 +131,63 @@ export default function App() {
   }, []);
 
   return (
-
     <View style={{ height: "100%" }}>
-    {isAuthenticated ? (
-      <View
-        style={{
-          flex: 1,
-          flexDirection: "column",
-          justifyContent: "space-around",
-          marginTop: 50,
-          height: "100%",
-        }}
-      >
-        <Text
-          style={{
-            textAlign: "center",
-            fontSize: 26,
-            marginBottom: 20,
-          }}
-        >
-          Reminders
-        </Text>
+      {isAuthenticated ? (
         <View
           style={{
-            backgroundColor: "white",
             flex: 1,
+            flexDirection: "column",
+            justifyContent: "space-around",
+            marginTop: 50,
+            height: "100%",
           }}
         >
-          
-          <SwipeListView
-            data={listData}
-            renderItem={({ item }) => <TodoItem item={item} />}
-            renderHiddenItem={(data, rowMap) =>
-              TodoItemButtons(data, rowMap, (rowMap, deleteThis) => {
-                // TIP: deletes a task/row
-                closeRow(rowMap, deleteThis);
-                const newData = [...listData];
-                const i = newData.findIndex((rowItem) => rowItem.key === 0);
-                newData.splice(i, 1);
-                setListData(newData);
-              })
-            }
-            rightOpenValue={-100}
-            previewRowKey={"0"}
-            previewOpenValue={-40}
-            previewOpenDelay={3000}
-            onRowDidOpen={onRowDidOpen}
-          />
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 26,
+              marginBottom: 20,
+            }}
+          >
+            Reminders
+          </Text>
+          <View
+            style={{
+              backgroundColor: "white",
+              flex: 1,
+            }}
+          >
+            <SwipeListView
+              data={listData}
+              renderItem={({ item }) => <TodoItem item={item} />}
+              renderHiddenItem={(data, rowMap) =>
+                TodoItemButtons(data, rowMap, (rowMap, deleteThis) => {
+                  // TIP: deletes a task/row
+                  closeRow(rowMap, deleteThis);
+                  const newData = [...listData];
+                  const i = newData.findIndex((rowItem) => rowItem.key === 0);
+                  newData.splice(i, 1);
+                  setListData(newData);
+                })
+              }
+              rightOpenValue={-100}
+              previewRowKey={"0"}
+              previewOpenValue={-40}
+              previewOpenDelay={3000}
+              onRowDidOpen={onRowDidOpen}
+            />
 
-          <View>
-            <AddTodo AddTodo={add} />
+            <View>
+              <AddTodo AddTodo={add} />
+            </View>
           </View>
         </View>
-      </View>
       ) : (
-        <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-    <Text>Please authenticate yourself</Text>
-  </View>
+        <View
+          style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+        >
+          <Text>Please authenticate yourself</Text>
+        </View>
       )}
 
       {showDatePicker ? (
@@ -223,12 +222,8 @@ export default function App() {
               setDateTimePickerMode("date");
             }
           }}
-          />
-          ) : null
-        }
-            
+        />
+      ) : null}
     </View>
-
-
   );
 }

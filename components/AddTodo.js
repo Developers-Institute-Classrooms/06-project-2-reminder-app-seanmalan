@@ -5,14 +5,12 @@ import { TextInput, View, Button, StyleSheet, TouchableOpacity, Text } from "rea
 const AddTodo = ({ AddTodo }) => {
   const [name, setName] = useState("");
 
-
-  const newAddName = (e) => {
-    setName(e);
-  };
-
   const handleAddTask = () => {
     AddTodo(name.toString());
     setName(""); // Reset the name state to clear the TextInput
+    async () => {
+      await schedulePushNotification(title, date);
+    }
   };
 
   return (
@@ -22,7 +20,7 @@ const AddTodo = ({ AddTodo }) => {
           placeholder="Enter task name..."
           style={styles.text}
           value={name}
-          onChangeText={(e) => newAddName(e)}
+          onChangeText={(e) => setName(e)}
         ></TextInput>
       </View>
 
