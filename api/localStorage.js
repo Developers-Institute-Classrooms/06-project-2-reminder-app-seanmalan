@@ -2,13 +2,25 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const STORAGE_KEY = "reminder-list";
 
-export const updateStorage = (item) => {
-  console.warn(`saving ${item}`);
+export const updateStorage = async (array) => {
+  if (array.length > 0) {
+    try {
+      const jsonValue = JSON.stringify(array);
+      await AsyncStorage.setItem("reminder-list", jsonValue);
+      console.log("Data saved successfully");
+    } catch (error) {
+      console.log(error);
+    }
+  }
 };
 
-export const getStorage = () => {
-  return [
-    { name: "hard coded task 1", dueDateTimestamp: "12341234", key: "1" },
-    { name: "hard coded task 2", dueDateTimestamp: "35234234", key: "2" },
-  ];
+export const getStorage = async (setListData) => {
+  try {
+    const jsonValue = await AsyncStorage.getItem(STORAGE_KEY);
+    if (jsonValue !== null) {
+      setListData(JSON.parse(jsonValue));
+    }
+  } catch (error) {
+    console.log(error);
+  }
 };

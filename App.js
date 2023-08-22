@@ -59,34 +59,13 @@ export default function App() {
 
   useEffect(() => {
     if (isAuthenticated) {
-      const getData = async () => {
-        try {
-          const jsonValue = await AsyncStorage.getItem("reminder-list");
-          if (jsonValue !== null) {
-            setListData(JSON.parse(jsonValue));
-          }
-        } catch (error) {
-          console.log(error);
-        }
-      };
-      getData();
+      getStorage(setListData);
     }
   }, [isAuthenticated]);
 
   useEffect(() => {
     if (isAuthenticated) {
-      const storeData = async (array) => {
-        if (array.length > 0) {
-          try {
-            const jsonValue = JSON.stringify(array);
-            await AsyncStorage.setItem("reminder-list", jsonValue);
-            console.log("Data saved successfully");
-          } catch (error) {
-            console.log(error);
-          }
-        }
-      };
-      storeData(listData);
+      updateStorage(listData);
     }
   }, [listData, isAuthenticated]);
 
