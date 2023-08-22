@@ -17,7 +17,6 @@ const TodoItem = ({ item }) => {
         height: 50,
         flex: 1,
         justifyContent: "center",
-      
       }}
     >
       <View style={{ width: "100%", flex: 1 }}>
@@ -35,7 +34,6 @@ const TodoItem = ({ item }) => {
             borderColor: "#808080",
             height: "150%",
             width: "96%",
-
           }}
         >
           <Text
