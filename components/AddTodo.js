@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextInput, View, Button, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { TextInput, View, StyleSheet, TouchableOpacity, Text } from "react-native";
 
 
 const AddTodo = ({ AddTodo }) => {

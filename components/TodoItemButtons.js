@@ -5,6 +5,7 @@ import React from "react";
 const TodoItemButtons = (data, rowMap, deleteRow) => (
   <View style={{ flex: 1, flexDirection: "row", justifyContent: "flex-end" }}>
     <Pressable
+      testID="delete"
       style={({ pressed }) => ({
         backgroundColor: pressed ? "red" : "tomato",
         width: 100,
