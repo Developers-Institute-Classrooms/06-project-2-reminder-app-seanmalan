@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextInput, View, Button, StyleSheet, TouchableOpacity, Text } from "react-native";
+import { TextInput, View, StyleSheet, TouchableOpacity, Text } from "react-native";
 
 
 const AddTodo = ({ AddTodo }) => {
@@ -25,7 +25,7 @@ const AddTodo = ({ AddTodo }) => {
       </View>
 
       {name.length > 0 && (
-      <TouchableOpacity title="Add" onPress={handleAddTask} style={styles.button}><Text>Add Task</Text></TouchableOpacity>
+      <TouchableOpacity title="Add" testID="AddButton" onPress={handleAddTask} style={styles.button}><Text>Add Task</Text></TouchableOpacity>
       )}
     </View>
   );
