@@ -1,6 +1,11 @@
 import React, { useState } from "react";
-import { TextInput, View, StyleSheet, TouchableOpacity, Text } from "react-native";
-
+import {
+  TextInput,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+} from "react-native";
 
 const AddTodo = ({ AddTodo }) => {
   const [name, setName] = useState("");
@@ -10,7 +15,7 @@ const AddTodo = ({ AddTodo }) => {
     setName(""); // Reset the name state to clear the TextInput
     async () => {
       await schedulePushNotification(title, date);
-    }
+    };
   };
 
   return (
@@ -25,7 +30,14 @@ const AddTodo = ({ AddTodo }) => {
       </View>
 
       {name.length > 0 && (
-      <TouchableOpacity title="Add" testID="AddButton" onPress={handleAddTask} style={styles.button}><Text>Add Task</Text></TouchableOpacity>
+        <TouchableOpacity
+          title="Add"
+          testID="AddButton"
+          onPress={handleAddTask}
+          style={styles.button}
+        >
+          <Text>Add Task</Text>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -46,30 +58,29 @@ const styles = StyleSheet.create({
     width: "96%",
     alignSelf: "center",
   },
-  newContainer: { 
-    flexGrow: 1 },
+  newContainer: {
+    flexGrow: 1,
+  },
 
-
-  text: { 
-    width: "100%", 
+  text: {
+    width: "100%",
     height: "100%",
     padding: 10,
     fontStyle: "italic",
     fontSize: 16,
     fontWeight: "bold",
+  },
 
-   },
-
-   button: {
-      width: "25%",
-      height: "100%",
-      alignSelf: "center",
-      justifyContent: "center",
-      alignItems: "center",
-      padding: 10,
-      backgroundColor: "#38A2D7",
-      borderRadius: 5,
-      borderColor: "#FCCF47",
-      borderWidth: 1,
-   }
+  button: {
+    width: "25%",
+    height: "100%",
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "#38A2D7",
+    borderRadius: 5,
+    borderColor: "#FCCF47",
+    borderWidth: 1,
+  },
 });

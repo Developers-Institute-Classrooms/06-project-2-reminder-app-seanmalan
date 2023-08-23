@@ -1,9 +1,5 @@
 import { React, useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  SafeAreaView,
-} from "react-native";
+import { View, Text, SafeAreaView } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import TodoItem from "./components/TodoItem";
 import TodoItemButtons from "./components/TodoItemButtons";
@@ -101,14 +97,12 @@ export default function App() {
     setShowDatePicker(true);
   };
 
-  // create a function that deletes the task from the list
   const deleteTask = (key) => {
     const newData = [...listData];
     const i = newData.findIndex((item) => item.key === key);
     newData.splice(i, 1);
     setListData(newData);
   };
-
 
   useEffect(() => {
     return () => {
