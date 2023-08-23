@@ -4,7 +4,7 @@ import { SwipeListView } from "react-native-swipe-list-view";
 import TodoItem from "./components/TodoItem";
 import TodoItemButtons from "./components/TodoItemButtons";
 import AddTodo from "./components/AddTodo";
-import { getStorage, updateStorage } from "./api/LocalStorage";
+import { getStorage, updateStorage } from "./api/localStorage";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FingerprintScanner from "react-native-fingerprint-scanner";
@@ -76,6 +76,7 @@ export default function App() {
     setListData(newData);
     setDateTimePickerMode("date");
     schedulePushNotification(taskName, dateTime);
+    console.log(date)
   };
 
   const closeRow = (rowMap, key) => {

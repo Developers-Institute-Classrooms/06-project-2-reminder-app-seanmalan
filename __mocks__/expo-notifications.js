@@ -7,3 +7,5 @@ export const setNotificationHandler = jest.fn(() => Promise.resolve({success: tr
 export const getPermissionsAsync = jest.fn(() => Promise.resolve({success: true}));
 
 export const requestPermissionsAsync = jest.fn(() => Promise.resolve({success: true}));
+
+export const scheduleNotificationAsync = jest.fn(() => Promise.resolve({success: true}));

@@ -48,6 +48,7 @@ const TodoItem = ({ item }) => {
             {item.name}
           </Text>
           <Text
+            testID="taskDate"
             style={{
               justifyContent: "flex-end",
             }}

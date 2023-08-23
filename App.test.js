@@ -181,8 +181,10 @@ describe('App', () => {
         key: '3',
       },
     ];
+
+    
   
-    const { getByPlaceholderText, getByTestId, getByText, queryByText, queryByTestId, UNSAFE_getByType } = render(<App />)
+    const { getByPlaceholderText, getByTestId, queryByText, UNSAFE_getByType, queryAllByTestId } = render(<App />)
   
     AsyncStorage.getItem = jest.fn(() => JSON.stringify(initialListData));
 
@@ -197,7 +199,8 @@ describe('App', () => {
     fireEvent(getByPlaceholderText('Enter task name...'), 'onChangeText', 'My New Task');
   
     // Open the date and time picker
-    fireEvent(getByTestId('AddButton'), 'onSubmitEditing');
+    const addTaskButton = getByTestId('AddButton');
+    fireEvent.press(addTaskButton);
 
     
 
@@ -205,19 +208,97 @@ describe('App', () => {
   expect(dateTimePicker).toBeOnTheScreen();
 
 
+  const date = new Date(2023, 7, 30);
+  const time = new Date(2023, 7, 30, 13, 30);
+
+
 
   fireEvent(dateTimePicker, 'onChange', ...createDateTimeSetEvtParams(date));
   fireEvent(dateTimePicker, 'onChange', ...createDateTimeSetEvtParams(time));
 
-    // Click the "Add Task" button
-    fireEvent(getByText('Add Task'), 'onPress');
-  
+
+  const finalListData = [
+    {
+      name: 'Reminder 1',
+      timestamp: new Date().toString(),
+      key: '1',
+    },
+    {
+      name: 'Reminder 2',
+      timestamp: new Date().toString(),
+      key: '2',
+    },
+    {
+      name: 'Reminder 3',
+      timestamp: new Date().toString(),
+      key: '3',
+    },
+    {
+      name: 'My New Task',
+      timestamp: time.toString(),
+      key: '4',
+    }
+  ]
+
     // Expect the new task to be on the screen
+    expect(queryByText('Reminder 1')).toBeTruthy();
+    expect(queryByText('Reminder 2')).toBeTruthy();
+    expect(queryByText('Reminder 3')).toBeTruthy();
     expect(queryByText('My New Task')).toBeTruthy();
+    expect(queryAllByTestId('taskDate')).toBeTruthy();
+    expect(queryAllByTestId('taskDate')).toHaveLength(4);
+    expect(queryAllByTestId('taskDate')[3]).toHaveTextContent('30 Aug, 1:30:00 pm');
+    
+
+
+    // expect(finalListData).toEqual(expect.arrayContaining(initialListData));
+
+
   });
 
 
+  test("selected due date should be correct", async () => {
+    
+    const { getByPlaceholderText, getByTestId, queryByText, UNSAFE_getByType, queryByTestId } = render(<App />)
+  
+    AsyncStorage.getItem = jest.fn(() => JSON.stringify(initialListData));
 
+    await waitFor(() => {});
+
+
+
+    // Add a task
+    fireEvent(getByPlaceholderText('Enter task name...'), 'onChangeText', 'Due Date Test');
+  
+    // Open the date and time picker
+    const addTaskButton = getByTestId('AddButton');
+    fireEvent.press(addTaskButton);
+
+    
+
+    const dateTimePicker = UNSAFE_getByType(DateTimePicker);
+  expect(dateTimePicker).toBeOnTheScreen();
+
+
+  // for some reason the date picker is one month out. I suspect its 0 indexed. Having tried it on the 12th month it says Jan and any other month is one behind. If I chooose 8th month which is Aug I get September.  0 gets Jan.
+  const date = new Date(2023, 7, 30);
+  const time = new Date(2023, 7, 30, 13, 30);
+
+
+
+  fireEvent(dateTimePicker, 'onChange', ...createDateTimeSetEvtParams(date));
+  fireEvent(dateTimePicker, 'onChange', ...createDateTimeSetEvtParams(time));
+
+
+    // Expect the new task to be on the screen
+    expect(queryByText('Due Date Test')).toBeTruthy();
+    expect(queryByTestId('taskDate')).toBeTruthy();
+    expect(queryByTestId('taskDate')).toHaveTextContent('30 Aug, 1:30:00 pm');
+
+    // I will leave a console.log with time in so you can see that it does show the correct date I want just one month out.
+
+    console.log(time)
+  });
 });
 
 
