@@ -76,7 +76,6 @@ export default function App() {
     setListData(newData);
     setDateTimePickerMode("date");
     schedulePushNotification(taskName, dateTime);
-    console.log(date)
   };
 
   const closeRow = (rowMap, key) => {
