@@ -1,10 +1,17 @@
 import React from "react";
 import { render, screen, waitFor, fireEvent } from "@testing-library/react-native";
 import App from "./App";
+import "@testing-library/jest-native/extend-expect";
 import * as LocalAuthentication from 'expo-local-authentication';
-import DateTimePicker from 'react-native-modal-datetime-picker';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import DateTimePicker from "@react-native-community/datetimepicker";
 
 
+jest.mock('@react-native-async-storage/async-storage');
+// jest.mock('@react-native-community/datetimepicker', () => jest.fn());
+// DateTimePicker.mockImplementation((props) => (
+//   <Input testID={props.testID} onFocus={() => props.onChange} />
+// ));
 
 describe("App", () => {
   test("that unauthenticated users are locked out", () => {
@@ -90,131 +97,127 @@ describe('App', () => {
     expect(getByTestId("AddButton")).toBeTruthy();
   });
 
-  // test('Deleting a task', async () => {
-  //   const initialListData = [
-  //     {
-  //       name: 'Reminder 1',
-  //       timestamp: new Date().toString(),
-  //       key: '1',
-  //     },
-  //     {
-  //       name: 'Reminder 2',
-  //       timestamp: new Date().toString(),
-  //       key: '2',
-  //     },
-  //     {
-  //       name: 'Reminder 3',
-  //       timestamp: new Date().toString(),
-  //       key: '3',
-  //     },
-  //   ];
-  
-  //   const { getByTestId, queryByText } = render(<App />, {
-  //     initialState: { listData: initialListData },
-  //   });
-
-  //   await waitFor(() => {});
-  
-  //   // test the items are being displayed
-
-  //   expect(queryByText('Reminder 1')).toBeTruthy();
-  //   expect(queryByText('Reminder 2')).toBeTruthy();
-  //   expect(queryByText('Reminder 3')).toBeTruthy();
-
-  //   // test that the user has swiped the second item and clicked the delete button
-
-  //   // Swipe the second reminder (Reminder 2)
-  //   fireEvent(getByTestId('2'), 'onSwipeableRightOpen');
-  
-  //   // Click the "Delete" button for the second reminder (Reminder 2)
-  //   fireEvent(getByTestId('delete'), 'onPress');
-  
-  //   // Check if the reminder was deleted
-  //   expect(queryByText('Reminder 2')).toBeNull();
-  //   expect(queryByText('Reminder 1')).toBeTruthy();
-  //   expect(queryByText('Reminder 3')).toBeTruthy();
-  // });
-
-  // test('Adding a task with specific date and time', async () => {
-  //   const initialListData = [
-  //     {
-  //       name: 'Reminder 1',
-  //       timestamp: new Date().toString(),
-  //       key: '1',
-  //     },
-  //     {
-  //       name: 'Reminder 2',
-  //       timestamp: new Date().toString(),
-  //       key: '2',
-  //     },
-  //     {
-  //       name: 'Reminder 3',
-  //       timestamp: new Date().toString(),
-  //       key: '3',
-  //     },
-  //   ];
-  
-  //   const { getByPlaceholderText, getByTestId, getByText } = render(
-  //     <App />,
-  //     { initialState: { listData: initialListData } }
-  //   );
-  
-  //   // Authenticate the user
-  //   await waitFor(() => expect(getByText('Please authenticate yourself')).toBeTruthy());
-  
-  
-  //   // Add a task
-  //   fireEvent(getByPlaceholderText('Enter task name...'), 'onChangeText', 'My New Task');
-  
-  //   // Open the date and time picker
-  //   fireEvent(getByTestId('AddButton'), 'onSubmitEditing');
-
-  //   // mock the date and time picker
-
-
+  test('Deleting a task', async () => {
     
-  
-  //   // Select date (August 30)
-  //   fireEvent(getByTestId('dateTimePicker'), 'onChange', {}, new Date(2023, 7, 30));
-  
-  //   // Select time (1:30 PM)
-  //   fireEvent(getByTestId('dateTimePicker'), 'onChange', {}, new Date(2023, 7, 30, 13, 30));
-  
-  //   // Click the "OK" button to confirm the date and time
-  //   fireEvent(getByText('OK'), 'onPress');
-  
-  //   // Click the "Add Task" button
-  //   fireEvent(getByText('Add Task'), 'onPress');
-  
-  //   // You can now add assertions here to check if the task was added with the specific date and time
-  // });
+    // Mock the AsyncStorage functions and get the initial list data
 
-  test('Adding a task with specific date and time', async () => {
-    const { getByPlaceholderText, getByText, queryByTestId } = render(<App />);
+    const initialListData = [
+      {
+        name: 'Reminder 1',
+        timestamp: new Date().toString(),
+        key: '1',
+      },
+      {
+        name: 'Reminder 2',
+        timestamp: new Date().toString(),
+        key: '2',
+      },
+      {
+        name: 'Reminder 3',
+        timestamp: new Date().toString(),
+        key: '3',
+      },
+    ];
   
-    
+    const { getByTestId, queryByText } = render(<App />);
+
+    AsyncStorage.getItem = jest.fn(() => JSON.stringify(initialListData));
+
+
     await waitFor(() => {});
   
+    // test the items are being displayed
+
+    expect(queryByText('Reminder 1')).toBeTruthy();
+    expect(queryByText('Reminder 2')).toBeTruthy();
+    expect(queryByText('Reminder 3')).toBeTruthy();
+
+ 
+    // test that the user has swiped the second item and clicked the delete button
+
+    // Swipe the second reminder (Reminder 2)
+    fireEvent(getByTestId('delete2'), 'onSwipeableRightOpen');
+  
+    // Click the "Delete" button for the second reminder (Reminder 2)
+    fireEvent.press(getByTestId('delete2'));
+  
+    // Check if the reminder was deleted
+    expect(queryByText('Reminder 2')).toBeNull();
+    expect(queryByText('Reminder 1')).toBeTruthy();
+    expect(queryByText('Reminder 3')).toBeTruthy();
+  });
+
+
+  const createDateTimeSetEvtParams = (date) => {
+    return [
+      {
+        type: "set",
+        nativeEvent: {
+          timestamp: date.getTime(),
+        },
+      },
+      date,
+    ];
+  };
+
+
+  
+
+  test('Adding a task with specific date and time', async () => {
+    const initialListData = [
+      {
+        name: 'Reminder 1',
+        timestamp: new Date().toString(),
+        key: '1',
+      },
+      {
+        name: 'Reminder 2',
+        timestamp: new Date().toString(),
+        key: '2',
+      },
+      {
+        name: 'Reminder 3',
+        timestamp: new Date().toString(),
+        key: '3',
+      },
+    ];
+  
+    const { getByPlaceholderText, getByTestId, getByText, queryByText, queryByTestId, UNSAFE_getByType } = render(<App />)
+  
+    AsyncStorage.getItem = jest.fn(() => JSON.stringify(initialListData));
+
+    await waitFor(() => {});
+
+    expect(queryByText('Reminder 1')).toBeTruthy();
+    expect(queryByText('Reminder 2')).toBeTruthy();
+    expect(queryByText('Reminder 3')).toBeTruthy();
+
 
     // Add a task
-    fireEvent(getByPlaceholderText('Enter task'), 'onChangeText', 'My New Task');
+    fireEvent(getByPlaceholderText('Enter task name...'), 'onChangeText', 'My New Task');
   
     // Open the date and time picker
-    fireEvent(getByPlaceholderText('Enter task'), 'onSubmitEditing');
-  
-    // Select date (August 30) and time (1:30 PM)
-    const datePicker = getByTestId('date-picker'); // Adjust this to your actual date picker's test ID
-    const timePicker = getByTestId('time-picker'); // Adjust this to your actual time picker's test ID
-  
-    fireEvent(datePicker, 'onConfirm', new Date(2023, 7, 30));
-    fireEvent(timePicker, 'onConfirm', new Date(2023, 7, 30, 13, 30));
-  
+    fireEvent(getByTestId('AddButton'), 'onSubmitEditing');
+
+    
+
+    const dateTimePicker = UNSAFE_getByType(DateTimePicker);
+  expect(dateTimePicker).toBeOnTheScreen();
+
+
+
+  fireEvent(dateTimePicker, 'onChange', ...createDateTimeSetEvtParams(date));
+  fireEvent(dateTimePicker, 'onChange', ...createDateTimeSetEvtParams(time));
+
     // Click the "Add Task" button
     fireEvent(getByText('Add Task'), 'onPress');
   
-    // You can now add assertions here to check if the task was added with the specific date and time
+    // Expect the new task to be on the screen
+    expect(queryByText('My New Task')).toBeTruthy();
   });
-  
+
+
+
 });
 
 
