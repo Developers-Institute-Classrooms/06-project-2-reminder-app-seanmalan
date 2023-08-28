@@ -5,6 +5,7 @@ const TodoItem = ({ item }) => {
   const formattedDate = new Intl.DateTimeFormat("en-NZ", {
     day: "numeric",
     month: "short",
+    year: "numeric",
     hour: "numeric",
     minute: "numeric",
     second: "numeric",
@@ -14,7 +15,8 @@ const TodoItem = ({ item }) => {
     <View
       style={{
         backgroundColor: "white",
-        height: 50,
+        padding: 5,
+        height: "20%",
         flex: 1,
         justifyContent: "center",
       }}
@@ -24,21 +26,21 @@ const TodoItem = ({ item }) => {
           style={{
             alignItems: "center",
             flex: 1,
-            flexDirection: "row",
+            flexDirection: "column",
             justifyContent: "space-between",
             alignSelf: "center",
             margin: 2,
+            padding: 2,
             backgroundColor: "#A0EBCF",
             borderWidth: 1,
             borderRadius: 5,
             borderColor: "#808080",
-            height: "150%",
             width: "96%",
           }}
         >
           <Text
             style={{
-              justifyContent: "flex-start",
+              justifyContent: "center",
               alignContent: "flex-start",
               padding: 2,
               fontSize: 18,
@@ -50,7 +52,9 @@ const TodoItem = ({ item }) => {
           <Text
             testID="taskDate"
             style={{
-              justifyContent: "flex-end",
+              justifyContent: "center",
+              padding: 3,
+              margin: 2,
             }}
           >
             {formattedDate}

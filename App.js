@@ -1,12 +1,11 @@
 import { React, useState, useEffect } from "react";
-import { View, Text, SafeAreaView } from "react-native";
+import { View, Text, SafeAreaView, Dimensions } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import TodoItem from "./components/TodoItem";
 import TodoItemButtons from "./components/TodoItemButtons";
 import AddTodo from "./components/AddTodo";
 import { getStorage, updateStorage } from "./api/localStorage";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import FingerprintScanner from "react-native-fingerprint-scanner";
 import * as LocalAuthentication from "expo-local-authentication";
 import * as Notifications from "expo-notifications";
@@ -30,6 +29,9 @@ export default function App() {
   const [taskName, setTaskName] = useState("");
   const [date, setDate] = useState(new Date());
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [deviceHeight, setDeviceHeight] = useState(0);
+  const [deviceWidth, setDeviceWidth] = useState(0);
+  
 
   useEffect(() => {
     registerForPushNotificationsAsync();
@@ -65,17 +67,46 @@ export default function App() {
     }
   }, [listData, isAuthenticated]);
 
-  const addTask = (dateTime) => {
-    const newData = [...listData];
-    newData.push({
-      name: taskName,
-      timestamp: dateTime.toString(),
-      key: new Date().getTime().toString(),
-    });
 
-    setListData(newData);
-    setDateTimePickerMode("date");
-    schedulePushNotification(taskName, dateTime);
+  useEffect(() => {
+    const newDeviceHeight = () => Dimensions.get("window").height;
+    const newDeviceWidth = () => Dimensions.get("window").width;
+
+    setDeviceHeight(newDeviceHeight);
+    setDeviceWidth(newDeviceWidth);
+
+    Dimensions.addEventListener("change", () => {
+      setDeviceHeight(newDeviceHeight);
+      setDeviceWidth(newDeviceWidth);
+    }
+    );
+
+    return () => {
+      Dimensions.removeEventListener("change", () => {
+        setDeviceHeight(newDeviceHeight);
+        setDeviceWidth(newDeviceWidth);
+      });
+    }
+  }, []);
+
+  console.log(deviceHeight, deviceWidth)
+
+  const addTask = (dateTime) => {
+    try {
+
+      const newData = [...listData];
+      newData.push({
+        name: taskName,
+        timestamp: dateTime.toString(),
+        key: new Date().getTime().toString(),
+      });
+      
+      setListData(newData);
+      setDateTimePickerMode("date");
+      schedulePushNotification(taskName, dateTime);
+    } catch (error) {
+      console.log("Error adding task", error);
+    }
   };
 
   const closeRow = (rowMap, key) => {
@@ -89,12 +120,17 @@ export default function App() {
   };
 
   const add = (task) => {
-    if (task === null || task === "") {
-      return;
+    try {
+
+      if (task === null || task === "") {
+        return;
+      }
+      setTaskName(task);
+      setDate(new Date());
+      setShowDatePicker(true);
+    } catch (error) {
+      console.log("Error adding task", error);
     }
-    setTaskName(task);
-    setDate(new Date());
-    setShowDatePicker(true);
   };
 
   const deleteTask = (key) => {
@@ -111,7 +147,7 @@ export default function App() {
   }, []);
 
   return (
-    <View style={{ height: "100%" }}>
+    <SafeAreaView style={{ height: deviceHeight, width: deviceWidth }}>
       {isAuthenticated ? (
         <View
           style={{
@@ -201,6 +237,6 @@ export default function App() {
           }}
         />
       ) : null}
-    </View>
+    </SafeAreaView>
   );
 }
