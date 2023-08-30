@@ -2,8 +2,7 @@
   "expo": {
     "name": "Reminder App",
     "slug": "reminder-app",
-    "version": "1.0.0",
-    "orientation": "portrait",
+    "version": "1.0.1",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
@@ -14,18 +13,28 @@
     "updates": {
       "fallbackToCacheTimeout": 0
     },
-    "assetBundlePatterns": ["**/*"],
+    "assetBundlePatterns": [
+      "**/*"
+    ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mobiledev23T3.SeanMalanReminderApp"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
-      }
+      },
+      "package": "com.mobiledev23T3.SeanMalanReminderApp",
+      "versionCode": 2
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "74fcdb34-21ca-4a2e-b6c7-7f1dcef25dc5"
+      }
     }
   }
 }
