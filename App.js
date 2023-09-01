@@ -1,5 +1,5 @@
 import { React, useState, useEffect } from "react";
-import { View, Text, SafeAreaView, Dimensions } from "react-native";
+import { View, Text, SafeAreaView, Dimensions, Button, KeyboardAvoidingView } from "react-native";
 import { SwipeListView } from "react-native-swipe-list-view";
 import TodoItem from "./components/TodoItem";
 import TodoItemButtons from "./components/TodoItemButtons";
@@ -55,6 +55,21 @@ export default function App() {
     authenticate();
   }, []);
 
+  const requestAuthentication = async () => {
+    try {
+      const { success, error } = await LocalAuthentication.authenticateAsync();
+      if (success) {
+        setIsAuthenticated(true);
+      } else {
+        setIsAuthenticated(false);
+        console.error('Authentication failed:', error);
+      }
+    } catch (error) {
+      console.error('Error occurred:', error);
+    }
+  };
+
+
   useEffect(() => {
     if (isAuthenticated) {
       getStorage(setListData);
@@ -89,7 +104,6 @@ export default function App() {
     }
   }, []);
 
-  console.log(deviceHeight, deviceWidth)
 
   const addTask = (dateTime) => {
     try {
@@ -149,7 +163,7 @@ export default function App() {
   return (
     <SafeAreaView style={{ height: deviceHeight, width: deviceWidth }}>
       {isAuthenticated ? (
-        <View
+        <KeyboardAvoidingView
           style={{
             flex: 1,
             flexDirection: "column",
@@ -157,6 +171,8 @@ export default function App() {
             marginTop: 50,
             height: "100%",
           }}
+          behavior="padding"
+          
         >
           <Text
             style={{
@@ -194,12 +210,13 @@ export default function App() {
               <AddTodo AddTodo={add} />
             </View>
           </View>
-        </View>
+        </KeyboardAvoidingView>
       ) : (
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >
           <Text>Please authenticate yourself</Text>
+          <Button title="Authenticate" onPress={requestAuthentication} />
         </View>
       )}
 
